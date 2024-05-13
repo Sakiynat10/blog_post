@@ -4,7 +4,7 @@ const HomeCategory = ({name , description}) => {
   return (
     <Fragment>
       <div className="category-cards">
-        <img src="/public/category-icon-1.svg" alt="logo" />
+        <img src="/category-icon-1.svg" alt="logo" />
         <div className="category-titles">
           <h4>{name}</h4>
           <p>{description}</p>
