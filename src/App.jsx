@@ -3,7 +3,7 @@ import { BrowserRouter, Navigate, Route,  Routes } from "react-router-dom";
 
 import Layout from "./components/layout/public";
 import HomePage from "./pages/public/home";
-import CategoryPage from "./pages/public/category";
+import CategoriesPage from "./pages/public/categories";
 import PostPage from "./pages/public/posts";
 import BlogPage from "./pages/public/blog";
 import AboutPage from "./pages/public/about";
@@ -19,6 +19,7 @@ import Dashboard from "./pages/admin/dashboard";
 import { AuthContext } from "./context";
 import AdminCategoryPage from "./pages/admin/category";
 import AdminPostPage from "./pages/admin/posts";
+import CategoryPage from "./pages/public/category";
 
 
 const App = () => {
@@ -29,15 +30,14 @@ const App = () => {
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<HomePage />} />
-            <Route path="category" element={<CategoryPage />} />
+            <Route path="category" element={<CategoriesPage/>}>
+              <Route path="category/id" element={<CategoryPage/>}/>
+            </Route>
             <Route path="posts" element={<PostPage />} />
             <Route path="blog" element={<BlogPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="register" element={<RegisterPage />} />
             <Route path="login" element={<LoginPage />} />
-            {/* <Route path="account" element={<AccountPage /> }/>
-            <Route path="my-posts" element={<MyPostPage />} /> */}
-
             <Route path="account" element={isAuth  ? <AccountPage /> : <Navigate to="/login" />} />
             <Route path="my-posts" element={isAuth ?  <MyPostPage /> : <Navigate to="/login" />} />
           </Route>

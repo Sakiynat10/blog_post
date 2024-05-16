@@ -11,6 +11,9 @@
             padding: 40% 0;
     }
     @media(min-width:800px) {
+        padding: 35% 0;
+    }
+    @media(min-width:922px) {
         padding: 30% 0;
     }
     @media(min-width:1200px) {
@@ -87,7 +90,7 @@
             }
         }
         @media(min-width:1200px) {
-            top: 40%;
+            top: 35%;
             left: 80px;
             .subtitle{
                 font-size: 28px;

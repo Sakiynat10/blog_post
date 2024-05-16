@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
@@ -9,16 +9,13 @@ import "swiper/css/pagination";
 import "./index.scss";
 import request from "../../../service/request";
 import HomeCategory from "../../../components/cards/home-category";
-import HomePopularBlog from "../../../components/cards/home-popular-blog";
+import { Link } from "react-router-dom";
+import Loading from "../../../components/loading/loading-over";
+import getImageURL from "../../../utils/get-image-url";
 const HomePage = () => {
-  const progressCircle = useRef(null);
-  const progressContent = useRef(null);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
-  const onAutoplayTimeLeft = (s, time, progress) => {
-    progressCircle.current.style.setProperty("--progress", 1 - progress);
-    progressContent.current.textContent = `${Math.ceil(time / 1000)}s`;
-  };
+  const [latestData, setLatestData] = useState(null);
 
   useEffect(() => {
     const getCategory = async () => {
@@ -28,40 +25,54 @@ const HomePage = () => {
           data: { data },
         } = await request("category");
         setData(data);
+
+        const {data: res } = await request("post/lastone");
+        setLatestData(res);
       } finally {
         setLoading(false);
       }
     };
     getCategory();
   }, []);
-
   return (
     <Fragment>
-      <section id="home">
-        <div className="home-content container">
-          <p className="subtitle">
-            Posted on <span className="bold-subtitle">startup</span>
-          </p>
-          <h1>Step-by-step guide to choosing great font pairs</h1>
-          <div className="content-highlight">
-            <p>
-              By <span className="highlight-subtitle">James West</span>
+      {loading ? (
+        <Loading />
+      ) : (
+        <section 
+        id="home"
+        style={{
+          backgroundImage: `url(${getImageURL(latestData?.photo)})`
+        }}
+        >
+          <div className="home-content container">
+            <p className="subtitle">
+              Posted on{" "}
+              <span className="bold-subtitle">{latestData?.category.name}</span>
             </p>
-            <span>|</span>
-            <p>May 23, 2022</p>
+            <h1>{latestData?.title}</h1>
+            <div className="content-highlight">
+              <p>
+                By{" "}
+                <span className="highlight-subtitle">
+                  {latestData?.user.first_name} {latestData?.user.last_name}
+                </span>
+              </p>
+              <span>|</span>
+              <p>
+                May <span>{latestData?.updatedAt.split("-")[1]}</span>,{" "}
+                {latestData?.updatedAt.split("-")[0]}
+              </p>
+            </div>
+            <p className="title">{latestData?.description}</p>
+            <a href="4">Read More</a>
           </div>
-          <p className="title">
-            Duis aute irure dolor in reprehenderit in voluptate velit esse
-            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-            cupidatat non proident.
-          </p>
-          <a href="4">Read More</a>
-        </div>
-        <a href="#blogs" className="down-arrow">
-          <BsChevronDoubleDown className="down-img" color="orange" />
-        </a>
-        <div className="overlay"></div>
-      </section>
+          <a href="#blogs" className="down-arrow">
+            <BsChevronDoubleDown className="down-img" color="orange" />
+          </a>
+          <div className="overlay"></div>
+        </section>
+      )}
       <section id="blogs">
         <div className="blogs-content container">
           <h3>Popular blogs</h3>
@@ -90,174 +101,171 @@ const HomePage = () => {
             }}
             navigation={false}
             modules={[Autoplay, Pagination]}
-            className="mySwiper blog-cards"  
+            className="mySwiper blog-cards"
           >
-              <SwiperSlide className="card">
-                  <div className="card-image">
-                    <img src="/blog-1.png" alt="card-img" />
-                  </div>
-                  <div className="card-content">
-                    <div className="content-highlight">
-                      <p>
-                        By{" "}
-                        <span className="highlight-subtitle-blue">
-                          James West
-                        </span>
-                      </p>
-                      <span>|</span>
-                      <p>May 23, 2022</p>
-                    </div>
-                    <h2>
-                      A UX Case Study Creating a Studious Environment for
-                      Students:{" "}
-                    </h2>
-                    <p className="subtitle">
-                      Duis aute irure dolor in reprehenderit in voluptate velit
-                      esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                      sint occaecat cupidatat non proident.
-                    </p>
-                  </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="card">
-                  <div className="card-image">
-                    <img src="/blog-2.png" alt="card-img" />
-                  </div>
-                  <div className="card-content">
-                    <div className="content-highlight">
-                      <p>
-                        By{" "}
-                        <span className="highlight-subtitle-blue">
-                          James West
-                        </span>
-                      </p>
-                      <span>|</span>
-                      <p>May 23, 2022</p>
-                    </div>
-                    <h2>
-                      A UX Case Study Creating a Studious Environment for
-                      Students:{" "}
-                    </h2>
-                    <p className="subtitle">
-                      Duis aute irure dolor in reprehenderit in voluptate velit
-                      esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                      sint occaecat cupidatat non proident.
-                    </p>
-                  </div>
+            <SwiperSlide className="card">
+              <div className="card-image">
+                <img src="/blog-1.png" alt="card-img" />
+              </div>
+              <div className="card-content">
+                <div className="content-highlight">
+                  <p>
+                    By{" "}
+                    <span className="highlight-subtitle-blue">James West</span>
+                  </p>
+                  <span>|</span>
+                  <p>May 23, 2022</p>
                 </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="card">
-                  <div className="card-image">
-                    <img src="/blog-3.png" alt="card-img" />
-                  </div>
-                  <div className="card-content">
-                    <div className="content-highlight">
-                      <p>
-                        By{" "}
-                        <span className="highlight-subtitle-blue">
-                          James West
-                        </span>
-                      </p>
-                      <span>|</span>
-                      <p>May 23, 2022</p>
-                    </div>
-                    <h2>
-                      A UX Case Study Creating a Studious Environment for
-                      Students:{" "}
-                    </h2>
-                    <p className="subtitle">
-                      Duis aute irure dolor in reprehenderit in voluptate velit
-                      esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                      sint occaecat cupidatat non proident.
-                    </p>
-                  </div>
+                <h2>
+                  A UX Case Study Creating a Studious Environment for Students:{" "}
+                </h2>
+                <p className="subtitle">
+                  Duis aute irure dolor in reprehenderit in voluptate velit esse
+                  cillum dolore eu fugiat nulla pariatur. Excepteur sint
+                  occaecat cupidatat non proident.
+                </p>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="card">
+                <div className="card-image">
+                  <img src="/blog-2.png" alt="card-img" />
                 </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="card">
-                  <div className="card-image">
-                    <img src="/blog-1.png" alt="card-img" />
-                  </div>
-                  <div className="card-content">
-                    <div className="content-highlight">
-                      <p>
-                        By{" "}
-                        <span className="highlight-subtitle-blue">
-                          James West
-                        </span>
-                      </p>
-                      <span>|</span>
-                      <p>May 23, 2022</p>
-                    </div>
-                    <h2>
-                      A UX Case Study Creating a Studious Environment for
-                      Students:{" "}
-                    </h2>
-                    <p className="subtitle">
-                      Duis aute irure dolor in reprehenderit in voluptate velit
-                      esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                      sint occaecat cupidatat non proident.
+                <div className="card-content">
+                  <div className="content-highlight">
+                    <p>
+                      By{" "}
+                      <span className="highlight-subtitle-blue">
+                        James West
+                      </span>
                     </p>
+                    <span>|</span>
+                    <p>May 23, 2022</p>
                   </div>
+                  <h2>
+                    A UX Case Study Creating a Studious Environment for
+                    Students:{" "}
+                  </h2>
+                  <p className="subtitle">
+                    Duis aute irure dolor in reprehenderit in voluptate velit
+                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+                    occaecat cupidatat non proident.
+                  </p>
                 </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="card">
-                  <div className="card-image">
-                    <img src="/blog-2.png" alt="card-img" />
-                  </div>
-                  <div className="card-content">
-                    <div className="content-highlight">
-                      <p>
-                        By{" "}
-                        <span className="highlight-subtitle-blue">
-                          James West
-                        </span>
-                      </p>
-                      <span>|</span>
-                      <p>May 23, 2022</p>
-                    </div>
-                    <h2>
-                      A UX Case Study Creating a Studious Environment for
-                      Students:{" "}
-                    </h2>
-                    <p className="subtitle">
-                      Duis aute irure dolor in reprehenderit in voluptate velit
-                      esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                      sint occaecat cupidatat non proident.
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="card">
+                <div className="card-image">
+                  <img src="/blog-3.png" alt="card-img" />
+                </div>
+                <div className="card-content">
+                  <div className="content-highlight">
+                    <p>
+                      By{" "}
+                      <span className="highlight-subtitle-blue">
+                        James West
+                      </span>
                     </p>
+                    <span>|</span>
+                    <p>May 23, 2022</p>
                   </div>
+                  <h2>
+                    A UX Case Study Creating a Studious Environment for
+                    Students:{" "}
+                  </h2>
+                  <p className="subtitle">
+                    Duis aute irure dolor in reprehenderit in voluptate velit
+                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+                    occaecat cupidatat non proident.
+                  </p>
                 </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="card">
-                  <div className="card-image">
-                    <img src="/blog-3.png" alt="card-img" />
-                  </div>
-                  <div className="card-content">
-                    <div className="content-highlight">
-                      <p>
-                        By{" "}
-                        <span className="highlight-subtitle-blue">
-                          James West
-                        </span>
-                      </p>
-                      <span>|</span>
-                      <p>May 23, 2022</p>
-                    </div>
-                    <h2>
-                      A UX Case Study Creating a Studious Environment for
-                      Students:{" "}
-                    </h2>
-                    <p className="subtitle">
-                      Duis aute irure dolor in reprehenderit in voluptate velit
-                      esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                      sint occaecat cupidatat non proident.
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="card">
+                <div className="card-image">
+                  <img src="/blog-1.png" alt="card-img" />
+                </div>
+                <div className="card-content">
+                  <div className="content-highlight">
+                    <p>
+                      By{" "}
+                      <span className="highlight-subtitle-blue">
+                        James West
+                      </span>
                     </p>
+                    <span>|</span>
+                    <p>May 23, 2022</p>
                   </div>
+                  <h2>
+                    A UX Case Study Creating a Studious Environment for
+                    Students:{" "}
+                  </h2>
+                  <p className="subtitle">
+                    Duis aute irure dolor in reprehenderit in voluptate velit
+                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+                    occaecat cupidatat non proident.
+                  </p>
                 </div>
-              </SwiperSlide>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="card">
+                <div className="card-image">
+                  <img src="/blog-2.png" alt="card-img" />
+                </div>
+                <div className="card-content">
+                  <div className="content-highlight">
+                    <p>
+                      By{" "}
+                      <span className="highlight-subtitle-blue">
+                        James West
+                      </span>
+                    </p>
+                    <span>|</span>
+                    <p>May 23, 2022</p>
+                  </div>
+                  <h2>
+                    A UX Case Study Creating a Studious Environment for
+                    Students:{" "}
+                  </h2>
+                  <p className="subtitle">
+                    Duis aute irure dolor in reprehenderit in voluptate velit
+                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+                    occaecat cupidatat non proident.
+                  </p>
+                </div>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide>
+              <div className="card">
+                <div className="card-image">
+                  <img src="/blog-3.png" alt="card-img" />
+                </div>
+                <div className="card-content">
+                  <div className="content-highlight">
+                    <p>
+                      By{" "}
+                      <span className="highlight-subtitle-blue">
+                        James West
+                      </span>
+                    </p>
+                    <span>|</span>
+                    <p>May 23, 2022</p>
+                  </div>
+                  <h2>
+                    A UX Case Study Creating a Studious Environment for
+                    Students:{" "}
+                  </h2>
+                  <p className="subtitle">
+                    Duis aute irure dolor in reprehenderit in voluptate velit
+                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+                    occaecat cupidatat non proident.
+                  </p>
+                </div>
+              </div>
+            </SwiperSlide>
           </Swiper>{" "}
           <span className="line"></span>
         </div>
@@ -294,9 +302,10 @@ const HomePage = () => {
           >
             {data?.map((category, i) => (
               <SwiperSlide key={i} className="slides-category">
-                <HomeCategory {...category} />
+                <Link to="category/${_id}">
+                  <HomeCategory {...category} />
+                </Link>
               </SwiperSlide>
-              
             ))}
           </Swiper>
         </div>

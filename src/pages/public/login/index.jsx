@@ -8,7 +8,7 @@ import { ROLE, TOKEN } from "../../../constants";
 import "./index.scss";
 import { AuthContext } from "../../../context";
 import loginSchema from "../../../scheme/loginSchema";
-import axios from "axios";
+import LoadingLogin from "../../../components/loading/loading-login";
 
 const LoginPage = () => {
   const [loading, setLoading] = useState(false);

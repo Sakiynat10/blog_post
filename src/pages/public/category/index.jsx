@@ -1,28 +1,9 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment } from "react";
 
 import "./index.scss";
-import request from "../../../service/request";
-import CategoryCard from "../../../components/cards/category-card";
+import { Pagination } from "antd";
 
 const CategoryPage = () => {
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    const getCategories = async () => {
-      try {
-        setLoading(true);
-        const {
-          data: { data },
-        } = await request("category");
-        setData(data);
-        console.log(data);
-      } finally {
-        setLoading(false);
-      }
-    };
-    getCategories();
-  }, []);
   return (
     <Fragment>
       <section id="category-blog">
@@ -34,16 +15,62 @@ const CategoryPage = () => {
               eiusmod tempor incididunt ut labore.
             </p>
             <h4>
-              Blog <span>{">"}</span> Business
+              Blog <span>></span> Business
             </h4>
           </div>
         </div>
         <div className="category-contents container">
           <input type="text" placeholder="Searching..." />
-          {data?.map((category, i) => (
-            <CategoryCard key={i} {...category} />
-          ))}
+          <div className="posts-content">
+            <img src="/public/blog-1.png" alt="posts-image" />
+            <div className="posts-infos">
+              <h6>Startup</h6>
+              <h3>Design tips for designers that cover everything you need</h3>
+              <p>
+                Duis aute irure dolor in reprehenderit in voluptate velit esse
+                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+                cupidatat non proident.
+              </p>
+            </div>
+          </div>
+          <div className="posts-content">
+            <img src="/blog-1.png" alt="posts-image" />
+            <div className="posts-infos">
+              <h6>Startup</h6>
+              <h3>Design tips for designers that cover everything you need</h3>
+              <p>
+                Duis aute irure dolor in reprehenderit in voluptate velit esse
+                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+                cupidatat non proident.
+              </p>
+            </div>
+          </div>
+          <div className="posts-content">
+            <img src="/blog-1.png" alt="posts-image" />
+            <div className="posts-infos">
+              <h6>Startup</h6>
+              <h3>Design tips for designers that cover everything you need</h3>
+              <p>
+                Duis aute irure dolor in reprehenderit in voluptate velit esse
+                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+                cupidatat non proident.
+              </p>
+            </div>
+          </div>
+          <div className="posts-content">
+            <img src="/blog-1.png" alt="posts-image" />
+            <div className="posts-infos">
+              <h6>Startup</h6>
+              <h3>Design tips for designers that cover everything you need</h3>
+              <p>
+                Duis aute irure dolor in reprehenderit in voluptate velit esse
+                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+                cupidatat non proident.
+              </p>
+            </div>
+          </div>
         </div>
+        <Pagination/>
       </section>
     </Fragment>
   );
